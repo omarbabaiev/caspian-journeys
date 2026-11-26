@@ -750,6 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Service Worker ---------- */
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => { /* offline dəstək kritik deyil */ });
+    navigator.serviceWorker.register('sw.js?v=2').catch(() => { /* offline dəstək kritik deyil */ });
   }
 });
