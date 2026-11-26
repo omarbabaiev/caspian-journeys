@@ -170,7 +170,7 @@ Sayt vizual olaraq güclü, interaktiv hissəları (filter, xəritə, hesablayı
 
 | # | İrad | Status | Sübut |
 | --- | --- | --- | --- |
-| 1 | RU/EN qismi tərcümə | ✅ Həll | 474 açarlı `js/i18n.js`; H1, kartlar, düymələr, FAQ, footer, modal, xəritə, hesablayıcı və qurucu EN/RU-da test olundu. |
+| 1 | RU/EN qismi tərcümə | ✅ Həll | 452 açarlı `js/i18n.js`; H1, kartlar, düymələr, FAQ, footer, modal, xəritə, hesablayıcı, qurucu və e-poçt mətni EN/RU-da test olundu. |
 | 2 | Placeholder əlaqə | ⚠️ Demo, etibarlı | Bütün əlaqə `js/config.js`-də; footer-də “Əlaqə məlumatları nümunədir”; doğrulanmamış məlumat JSON-LD-yə düşmür (`contactVerified: false`). |
 | 3 | Telegram endpoint boş | ⚠️ Demo, etibarlı | Worker kodu hazır; endpoint boş olduqda şəbəkə sorğusu yoxdur və forma bunu açıq bildirir. |
 | 4 | `.eyebrow` kontrastı | ✅ Həll | `--terracotta-ink: #a8512f`, AA. |
@@ -182,5 +182,7 @@ Sayt vizual olaraq güclü, interaktiv hissəları (filter, xəritə, hesablayı
 | 10 | Modal focus trap | ✅ Həll | `inert` fon, Tab dövrü, Escape, focus modal daxilində başlayır və geri qayıdır. |
 
 Reviewer detallarından əlavə həll olunanlar: çətinlik/məsafə/mövsüm badge-ləri, daxildir/daxil deyil qutusu, solo və uşaq qiyməti FAQ, qrup endirimi, qısa seçim düymələri, mobildə gecikməli WhatsApp, animasiya düyməsi, footer oxunaqlılığı, lead statusu, VIP avtomobil sinfi və şərtləri.
+
+Əlavə scope dəyişikliyi (v8): bütün tur məzmunu Bakı / İçərişəhər və onun ətrafındakı Abşeron–Qobustan–Xəzər sahili ilə məhdudlaşdırıldı; Şəki, Quba, Lahıc, Xınalıq, Naxçivan və digər region istinadları HTML, JS, tərcümə lüğəti və metadata-dan, həmçinin istifadə olunmayan şəkillər service worker shell-indən və `assets/images/` qovluğundan çıkarıldı. RU sayğacında pluralləşdirmə düzəldildi.
 
 **Yenidən qiymət:** 8.5/10 — yalnız real əlaqə məlumatları və canlı Telegram kanalı əlavə olunduqda 9+/10 mümkündür. Texniki yoxlamalar: `html-validate`, bütün `node --check`, JSON/CSS yoxlaması, desktop + 390px iframe, EN/RU, filter/calculator/builder/booking/review/newsletter/admin və modal focus testləri keçdi; konsol xətası yoxdur.

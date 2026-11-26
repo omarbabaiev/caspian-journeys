@@ -334,7 +334,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ok) visible += 1;
     });
 
-    if (filterCount) filterCount.textContent = `${visible} ${T('marşrut tapıldı')}`;
+    if (filterCount) {
+      const lang = I18 ? I18.current : 'az';
+      let label;
+      if (lang === 'ru') {
+        const mod10 = visible % 10;
+        const mod100 = visible % 100;
+        label = mod10 === 1 && mod100 !== 11 ? 'маршрут найден'
+          : (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) ? 'маршрута найдено'
+          : 'маршрутов найдено';
+      } else if (lang === 'en') {
+        label = `route${visible === 1 ? '' : 's'} found`;
+      } else {
+        label = 'marşrut tapıldı';
+      }
+      filterCount.textContent = `${visible} ${label}`;
+    }
   }
 
   if (filterForm) {
@@ -370,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const mapData = {
     baki: { title: 'Bakı & İçərişəhər', desc: 'Qız qalası, dar daş küçələr, sahil bulvarı və yerli çay evləri.', time: '3 saat', people: '2–6 nəfər' },
     qobustan: { title: 'Qobustan & Palçıq Vulkanları', desc: 'Qaya təsvirləri, vulkanlar və yarım səhra işığı.', time: '5 saat', people: '2–8 nəfər' },
-    sheki: { title: 'Şəki & Qəbələ', desc: 'Karvansaraylar, vitrajlar, meşə yolu və ev mətbəxi.', time: '2 gün', people: '2–6 nəfər' },
-    shahdag: { title: 'Şahdağ & Quba', desc: 'Zirvə havası, meşə yolları və Quba bağları.', time: '1 gün', people: '2–6 nəfər' },
-    lahc: { title: 'Lahıc & İsmayıllı', desc: 'Mis sənətkarlığı, daş küçələr və meşə qəhvəsi.', time: '1 gün', people: '2–6 nəfər' }
+    abseron: { title: 'Abşeron kəndləri', desc: 'Üzüm bağları, kənd evləri və çay süfrəsi.', time: '1 gün', people: '2–6 nəfər' },
+    xezer: { title: 'Xəzər sahili', desc: 'Bulvar, marina və gün batımı.', time: '3 saat', people: '2–6 nəfər' },
+    yanardag: { title: 'Yanar Dağ', desc: 'Yeraltı qazın yaratdığı əbədi alov və gün batımı.', time: '2 saat', people: '2–6 nəfər' }
   };
   const mapDetail = $('#map-detail');
   let activeMapKey = null;
@@ -446,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'şəhər tarixi': 'İçərişəhər, Qız qalası və yerli bazar gəzintisi',
     'təbiət': 'Qobustan petroqlifləri və palçıq vulkanları',
     'kulinariya': 'Ev mətbəxində plov, dolma və çay dərsi',
-    'dağ': 'Quba kənd yolu və Şahdağ zirvə havası',
+    'sahil': 'Xəzər bulvarı və gün batımı kadrları',
     'fotoqrafiya': 'Gün doğumu / batımı üçün xüsusi kadr nöqtələri'
   };
   const builderSlots = ['Səhər', 'Günorta', 'Axşam'];
@@ -567,16 +582,16 @@ document.addEventListener('DOMContentLoaded', () => {
       { src: 'assets/images/dest-gobustan.jpg', title: 'Günorta: vulkanlar', text: 'Yarım səhra işığında palçıq vulkanları.' },
       { src: 'assets/images/dest-gobustan.jpg', title: 'Axşam: Yanar dağ', text: 'Əbədi alov və gün batımı.' }
     ],
-    sheki: [
-      { src: 'assets/images/dest-sheki.jpg', title: 'Səhər: karvansaray', text: 'Vitrajlar və ipək yolu hekayəsi.' },
-      { src: 'assets/images/dest-sheki.jpg', title: 'Günorta: Qəbələ', text: 'Meşə yolu və ev mətbəxi.' },
-      { src: 'assets/images/dest-sheki.jpg', title: 'Axşam: çay', text: 'Şəki halvası və uzun söhbət.' }
+    abseron: [
+      { src: 'assets/images/dest-baku.jpg', title: 'Səhər: kənd yolu', text: 'Üzüm bağları və ilk çay.' },
+      { src: 'assets/images/dest-baku.jpg', title: 'Günorta: ev mətbəxi', text: 'Plov, çörək və uzun söhbət.' },
+      { src: 'assets/images/dest-baku.jpg', title: 'Axşam: Xəzər', text: 'Sahil işıqları və şam yeməyi.' }
     ],
     default: [
       { src: 'assets/images/dest-baku.jpg', title: 'Bakı', text: 'Daş küçələrdə başlayan bir gün.' },
       { src: 'assets/images/dest-gobustan.jpg', title: 'Qobustan', text: 'Vulkanlar və qaya təsvirləri.' },
-      { src: 'assets/images/dest-sheki.jpg', title: 'Şəki', text: 'Karvansaraylar və vitrajlar.' },
-      { src: 'assets/images/dest-shahdag.jpg', title: 'Şahdağ', text: 'Qafqaz zirvələrinin havası.' }
+      { src: 'assets/images/dest-baku.jpg', title: 'Abşeron', text: 'Kənd evləri və üzüm bağları.' },
+      { src: 'assets/images/dest-gobustan.jpg', title: 'Yanar Dağ', text: 'Əbədi alov və gün batımı.' }
     ]
   };
   let storySlides = storySlidesData.default;
@@ -688,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Paylaş və copy-link ---------- */
-  const shareText = () => T('Azərbaycanı sadəcə görmə, onu yaşa — Caspian Journeys');
+  const shareText = () => T('Bakını sadəcə görmə, onu yaşa — Caspian Journeys');
 
   $$('[data-share]').forEach((button) => {
     button.addEventListener('click', async () => {
@@ -819,16 +834,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const cfg = window.CJ_CONFIG || {};
       const email = cfg.email || 'hello@caspianjourneys.az';
-      const subject = `Caspian Journeys — ${interestValue}`;
+      const subject = `Caspian Journeys — ${T(interestValue)}`;
       const body = [
-        `Ad: ${name}`,
-        `WhatsApp / telefon: ${phone}`,
-        `Tarix: ${date || 'hələ təyin edilməyib'}`,
-        `Nəfər sayı: ${people}`,
-        `Maraq dairəsi: ${interestValue}`,
-        `Büdcə: ${budget}`,
+        `${T('Ad:')} ${name}`,
+        `${T('WhatsApp / telefon:')} ${phone}`,
+        `${T('Tarix:')} ${date || T('hələ təyin edilməyib')}`,
+        `${T('Nəfər sayı:')} ${people}`,
+        `${T('Maraq dairəsi:')} ${T(interestValue)}`,
+        `${T('Büdcə:')} ${budget}`,
         '',
-        'Salam, mənim üçün səyahət planı hazırlaya bilərsinizmi?'
+        T('Salam, mənim üçün səyahət planı hazırlaya bilərsinizmi?')
       ].join('\n');
       const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -870,6 +885,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setLang(initialLang, false);
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v=7').catch(() => { /* offline dəstək kritik deyil */ });
+    navigator.serviceWorker.register('sw.js?v=8').catch(() => { /* offline dəstək kritik deyil */ });
   }
 });

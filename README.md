@@ -1,6 +1,6 @@
 # Caspian Journeys
 
-Azərbaycan üzrə premium bələdçi xidməti landing page-i. Statik `HTML + CSS + JS` stack-i qorunub; framework və build addımı yoxdur.
+Bakı və İçərişəhər üzrə premium bələdçi xidməti landing page-i. Statik `HTML + CSS + JS` stack-i qorunub; framework və build addımı yoxdur.
 
 ## Arxitektura
 
@@ -9,13 +9,13 @@ caspian-journeys/
 ├── index.html          # Semantik səhifə, SEO/OG/Twitter, JSON-LD, hreflang, bütün bölmələr
 ├── css/style.css       # Dizayn sistemi, responsive, reduced-motion, modal və A/B stillər
 ├── js/config.js        # Mərkəzi əlaqə məlumatları və Telegram Worker endpoint-i
-├── js/i18n.js          # AZ / EN / RU vahid tərcümə lüğəti (456+ açar)
+├── js/i18n.js          # AZ / EN / RU vahid tərcümə lüğəti (452 açar)
 ├── js/main.js          # Bütün interaksiyalar, dinamik tərcümə, localStorage, PWA
 ├── js/notify.js        # Sorğu / rəy / bülleten / analitika bildiriş köprüsü
 ├── worker/             # Cloudflare Worker (Telegram Bot API proxy)
 ├── admin.html          # Demo admin panel: sorğular, bülleten, rəylər, analitika, status
 ├── manifest.json       # PWA manifest
-├── sw.js               # Service worker (v7 offline shell)
+├── sw.js               # Service worker (v8 offline shell)
 └── assets/images/      # Şəffaf loqo, xalça ornamenti, optimallaşdırılmış JPEG + WebP
 ```
 
@@ -31,8 +31,9 @@ caspian-journeys/
 
 ### Tur və planlama
 
-- Axtarış + region / müddət / maraq filtri, nəticə sayğı və **"Mənim üçün seç"** qısa yolları.
-- 5 əsas + 7 əlavə istiqamət; dağ kartlarında çətinlik, yüksəklik, uzunluq və mövsüm.
+- Axtarış + ərazi / müddət / maraq filtri, nəticə sayğı və **"Mənim üçün seç"** qısa yolları.
+- 5 Bakı / Abşeron istiqaməti; Qobustan kartında asan marşrut, uzunluq və mövsüm.
+- Məzmun yalnız Bakı / İçərişəhər, Abşeron, Qobustan və Xəzər sahili ilə məhdudlaşır; digər region istinadları və istifadə olunmayan şəkillər çıxarılıb.
 - Interaktiv SVG xəritə: klik və klaviatura ilə nöqtə seçimi, tərcümə olunan detal paneli.
 - Qiymət cədvəli, **daxildir / daxil deyil** qutusu, nəfər/gün/transfer/VIP hesablayıcı və 4+ nəfərə 10% qrup endirimi.
 - Marşrut qurucu: maraq və gün seçiminə görə təkrarlanmayan günlük plan.
@@ -40,7 +41,7 @@ caspian-journeys/
 
 ### İçerik və media
 
-- 5 editorial təcrübə, 4 mövsüm, 3 bələdçi profili, 4 region üzrə qastronomiya rehberi.
+- 5 editorial təcrübə, 4 mövsüm, 3 bələdçi profili, 4 Bakı sahəsi üzrə qastronomiya rehberi.
 - Ailə / cütlük / VIP kartları, praktik səyahət məlumatları və geniş FAQ.
 - Foto lightbox və 3 **foto hekayə** (video iddiası yoxdur; reduced-motion-aware).
 - Rəy və bülleten formaları; nümunə kontent açıq şəkildə qeyd olunub.
@@ -58,7 +59,7 @@ caspian-journeys/
 
 ### PWA və admin
 
-- `manifest.json` + 192/512 px ikonlar + `cj-shell-v7` service worker.
+- `manifest.json` + 192/512 px ikonlar + `cj-shell-v8` service worker.
 - `admin.html`: sorğular, bülleten, rəylər, analitika; status dəyişikliyi, silmə və təmizləmə.
 - Məlumatlar yalnız cihazın browser-indədir: `cj_bookings`, `cj_newsletter`, `cj_reviews`, `cj_events`, `cj_lang`, `cj_ab`, `cj_motion`.
 
