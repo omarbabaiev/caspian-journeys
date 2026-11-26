@@ -6,8 +6,8 @@ const CACHE = 'cj-shell-v2';
 const SHELL = [
   '.',
   'index.html',
-  'css/style.css',
-  'js/main.js',
+  'css/style.css?v=2',
+  'js/main.js?v=2',
   'manifest.json',
   'assets/images/carpet-pattern.svg',
   'assets/images/logo-full-cropped.jpg',
