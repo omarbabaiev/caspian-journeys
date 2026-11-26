@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const events = readStore('cj_events');
     events.push({ name, detail, at: new Date().toISOString() });
     writeStore('cj_events', events.slice(-200));
+    if (window.CJNotify && window.CJNotify.event) window.CJNotify.event(name, detail);
   };
 
   /* ---------- İl və A/B test ---------- */
@@ -571,6 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderCustomReviews();
       if (reviewStatus) reviewStatus.textContent = 'Rəyin qeyd olundu. Təşəkkür edirik!';
       reviewForm.reset();
+      if (window.CJNotify && window.CJNotify.send) window.CJNotify.send('review', review);
       logEvent('review_submit', { name: review.name });
     });
   }
@@ -593,6 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
       writeStore('cj_newsletter', emails);
       if (nlStatus) nlStatus.textContent = 'Abunə tamamlandı! Yeni marşrutları ilk sən alacaqsan.';
       newsletterForm.reset();
+      if (window.CJNotify && window.CJNotify.send) window.CJNotify.send('newsletter', { email });
       logEvent('newsletter', { email });
     });
   }
@@ -743,6 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
           icsLink.dataset.url = url;
         }
         openModal(successModal);
+        if (window.CJNotify && window.CJNotify.send) window.CJNotify.send('booking', booking);
         logEvent('booking_submit', { interest: interestValue, people, budget });
       }, reduceMotion ? 0 : 450);
     });
@@ -750,6 +754,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Service Worker ---------- */
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v=3').catch(() => { /* offline dəstək kritik deyil */ });
+    navigator.serviceWorker.register('sw.js?v=4').catch(() => { /* offline dəstək kritik deyil */ });
   }
 });
