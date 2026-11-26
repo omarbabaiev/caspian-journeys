@@ -15,7 +15,7 @@ caspian-journeys/
 ├── worker/             # Cloudflare Worker (Telegram Bot API proxy)
 ├── admin.html          # Demo admin panel: sorğular, bülleten, rəylər, analitika, status
 ├── manifest.json       # PWA manifest
-├── sw.js               # Service worker (v6 offline shell)
+├── sw.js               # Service worker (v7 offline shell)
 └── assets/images/      # Şəffaf loqo, xalça ornamenti, optimallaşdırılmış JPEG + WebP
 ```
 
@@ -58,7 +58,7 @@ caspian-journeys/
 
 ### PWA və admin
 
-- `manifest.json` + 192/512 px ikonlar + `cj-shell-v6` service worker.
+- `manifest.json` + 192/512 px ikonlar + `cj-shell-v7` service worker.
 - `admin.html`: sorğular, bülleten, rəylər, analitika; status dəyişikliyi, silmə və təmizləmə.
 - Məlumatlar yalnız cihazın browser-indədir: `cj_bookings`, `cj_newsletter`, `cj_reviews`, `cj_events`, `cj_lang`, `cj_ab`, `cj_motion`.
 

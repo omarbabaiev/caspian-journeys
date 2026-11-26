@@ -92,18 +92,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
   }
 
-  /* ---------- Aktiv nav ---------- */
+  /* ---------- Aktiv nav: menyu sırası ilə eyni ardıcıllıq ---------- */
   const navLinks = nav ? $$('a[href^="#"]', nav) : [];
-  const sections = navLinks.map((l) => $(l.getAttribute('href'))).filter(Boolean);
+  const navSections = navLinks
+    .map((link) => ({ link, section: $(link.getAttribute('href')) }))
+    .filter((item) => item.section)
+    .sort((a, b) => (a.section.compareDocumentPosition(b.section) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
 
-  if (sections.length && 'IntersectionObserver' in window) {
-    const navObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        navLinks.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === `#${entry.target.id}`));
-      });
-    }, { rootMargin: '-40% 0px -55% 0px' });
-    sections.forEach((s) => navObserver.observe(s));
+  function updateActiveNav() {
+    if (!navSections.length) return;
+    const marker = window.scrollY + Math.min(160, window.innerHeight * 0.22);
+    let active = navSections[0];
+    navSections.forEach((item) => {
+      const top = item.section.getBoundingClientRect().top + window.scrollY;
+      if (top <= marker) active = item;
+    });
+    navSections.forEach((item) => {
+      item.link.classList.toggle('is-active', item === active);
+      if (item === active) item.link.setAttribute('aria-current', 'true');
+      else item.link.removeAttribute('aria-current');
+    });
+  }
+
+  if (navSections.length) {
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    window.addEventListener('resize', updateActiveNav);
+    updateActiveNav();
   }
 
   /* ---------- Scroll reveal ---------- */
@@ -856,6 +870,6 @@ document.addEventListener('DOMContentLoaded', () => {
   setLang(initialLang, false);
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v=6').catch(() => { /* offline dəstək kritik deyil */ });
+    navigator.serviceWorker.register('sw.js?v=7').catch(() => { /* offline dəstək kritik deyil */ });
   }
 });
