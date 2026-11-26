@@ -9,10 +9,13 @@ caspian-journeys/
 ├── index.html          # Semantik səhifə, SEO/OG, hreflang, ikon sprite, bütün bölmələr
 ├── css/style.css       # Dizayn sistemi, responsive, reduced-motion, A/B variant
 ├── js/main.js          # Bütün interaksiyalar, i18n, localStorage, PWA registration
+├── js/config.js        # Telegram Worker endpoint-i (boş = demo rejimi)
+├── js/notify.js        # Sorğu/rəy/bülleten/analitika bildiriş köprüsü
+├── worker/             # Cloudflare Worker (Telegram Bot API proxy)
 ├── admin.html          # Demo admin panel (Sorğular / Bülleten / Rəylər / Analitika)
 ├── manifest.json       # PWA manifest
 ├── sw.js               # Service worker (cache-first asset, network-first navigation)
-└── assets/images/      # Loqo, xalça ornamenti, optimallaşdırılmış real fotolar, PWA ikonları
+└── assets/images/      # Şəffaf loqo, xalça ornamenti, fotolar, PWA ikonları
 ```
 
 ## Qorunan dizayn sistemi
@@ -66,12 +69,43 @@ Statik mühitdə aşağıdakılar interfeys + lokal analoq olaraq qurulub:
 - Canlı chat → WhatsApp Business / Tawk.to üçün hazır düymələr
 - Video fon → hazırda cinematic image + story modulu; `hero-video` üçün media faylı əlavə edilərsə dəyişdirilə bilər
 
+## Canlı hosting
+
+Sayt GitHub Pages üzərində ictimai və şifresizdir:
+
+- `https://omarbabaiev.github.io/caspian-journeys/`
+- Demo admin: `https://omarbabaiev.github.io/caspian-journeys/admin.html`
+- Repo: `https://github.com/omarbabaiev/caspian-journeys`
+
+`gh-pages` branch-i Pages mənbəyidir; `main`-ə push edildikdə eyni dəyişiklik `gh-pages`-ə də göndərilir.
+
+## Telegram bildirişləri
+
+Bot token-i **heç vaxt** statik JS-ə yazmaq olmaz. `worker/telegram-notify.js` Cloudflare Worker olaraq token-i secret-də saxlayır və yalnız sayt origin-dən gələn POST sorğularını qəbul edir.
+
+```bash
+npx wrangler login
+npx wrangler secret put TELEGRAM_BOT_TOKEN
+npx wrangler secret put TELEGRAM_CHAT_ID
+npx wrangler deploy
+```
+
+Deploy-dan sonra Worker URL-i `js/config.js` faylında `window.CJ_NOTIFY_URL` dəyərinə yazılır və dəyişiklik yenidən `main`/`gh-pages`-ə push edilir. Endpoint boş olduqda sayt demo rejimində işləyir, heç bir şəbəkə sorğusu getmir.
+
+Göndərilənlər: rezervasiya sorğusu, yeni rəy, bülleten abunəsi və 30 saniyəlik analitika paketi (`logEvent` hadisələri).
+
+## Loqo
+
+`assets/images/logo-mark-transparent.png` — qara fonu çıxarılmış, şəffaf fonlu əsas loqo. Header və footer bu faylı istifadə edir; PWA ikonları da eyni loqodan generasiya olunub.
+
 ## Yoxlamalar
 
 ```bash
 npx --yes html-validate index.html   # pass
 node --check js/main.js              # pass
-CSS brace balance                    # pass (428/428)
+node --check js/notify.js            # pass
+node --input-type=module --check < worker/telegram-notify.js  # pass
+CSS brace balance                    # pass (435/435)
 python3 -m http.server 8000          # local server
 ```
 
