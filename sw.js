@@ -1,7 +1,7 @@
 /* Caspian Journeys — minimal offline shell. Safe to delete/update at any time. */
 'use strict';
 
-const CACHE = 'cj-shell-v1';
+const CACHE = 'cj-shell-v2';
 
 const SHELL = [
   '.',

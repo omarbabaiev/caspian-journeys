@@ -122,6 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
     revealItems.forEach((item) => item.classList.add('is-visible'));
   }
 
+  /* Ekranda olan, lakin observer tərəfindən qaçırılmış elementlər üçün ehtiyat. */
+  window.setTimeout(() => {
+    revealItems.forEach((item) => {
+      if (item.getBoundingClientRect().top < window.innerHeight * 1.2) {
+        item.classList.add('is-visible');
+      }
+    });
+  }, 900);
+
   /* ---------- Çox dilli keçid (AZ / EN / RU) ---------- */
   const I18N = {
     az: {

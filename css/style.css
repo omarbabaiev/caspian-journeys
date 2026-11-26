@@ -403,8 +403,10 @@ section[id] { scroll-margin-top: 86px; }
 .section-head-light h2 { color: var(--cream); }
 .section-head-light > p:not(.eyebrow) { color: rgba(246, 239, 227, 0.7); }
 
-.reveal { opacity: 0; transform: translateY(18px); }
-.reveal.is-visible {
+/* Reveal yalnız JS işləyəndə tətbiq olunur; JS yoxdursa bütün kontent görünür. */
+.reveal { opacity: 1; transform: none; }
+.js .reveal { opacity: 0; transform: translateY(18px); }
+.js .reveal.is-visible {
   opacity: 1;
   transform: none;
   transition: opacity 720ms ease, transform 720ms cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -851,8 +853,8 @@ section[id] { scroll-margin-top: 86px; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; }
-  .reveal.is-visible { transition: none; }
+  .js .reveal { opacity: 1; transform: none; }
+  .js .reveal.is-visible { transition: none; }
   .collage-route { stroke-dashoffset: 0; animation: none; }
   .scroll-cue span { animation: none; }
   .hero-bg, .destination-card img, .experience-card img { transform: none !important; }
