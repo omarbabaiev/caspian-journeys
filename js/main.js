@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const scrollBehavior = reduceMotion ? 'auto' : 'smooth';
+  let scrollBehavior = reduceMotion ? 'auto' : 'smooth';
 
   /* ---------- localStorage köməkçiləri (demo admin panel üçün) ---------- */
   const readStore = (key) => {
@@ -44,17 +44,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const backTop = $('#back-to-top');
   const progress = $('#scroll-progress');
   let ticking = false;
+  let waReady = false;
 
   function onScroll() {
     const y = window.scrollY;
     const max = document.documentElement.scrollHeight - window.innerHeight;
 
     if (header) header.classList.toggle('is-scrolled', y > 30);
-    if (waButton && y > 260) waButton.classList.add('is-visible');
+    if (waButton) waButton.classList.toggle('is-visible', y > 260 && waReady);
     if (backTop) backTop.classList.toggle('is-visible', y > 700);
     if (progress) progress.style.width = `${max > 0 ? Math.min(100, (y / max) * 100) : 0}%`;
 
-    if (heroBg && !reduceMotion && y < window.innerHeight * 1.2) {
+    if (heroBg && !motionDisabled() && y < window.innerHeight * 1.2) {
       heroBg.style.transform = `translate3d(0, ${Math.min(y * 0.12, 110)}px, 0) scale(1.08)`;
     }
     ticking = false;
@@ -67,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, { passive: true });
   onScroll();
+
+  /* Üzən WhatsApp: yalnız mobildə (CSS) və 2 saniyə gecikmə ilə görünür. */
+  window.setTimeout(() => { waReady = true; onScroll(); }, 2000);
 
   if (backTop) {
     backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: scrollBehavior }));
@@ -133,136 +137,159 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 900);
 
   /* ---------- Çox dilli keçid (AZ / EN / RU) ---------- */
-  const I18N = {
-    az: {
-      nav_tours: 'Turlar', nav_dest: 'İstiqamətlər', nav_about: 'Haqqımızda', nav_reviews: 'Rəylər', nav_contact: 'Əlaqə',
-      cta_plan: 'Turunu planla', cta_routes: 'Marşrutlara bax', cta_film: 'Filmi izlə',
-      proof_guests: 'qonaq', proof_rating: 'rəy', proof_routes: 'marşrut',
-      hero_title: 'Azərbaycanı sadəcə görmə. <em>Onu yaşa.</em>',
-      hero_lead: 'Yerli bələdçilərlə hazırlanmış fərdi, rahat və unudulmaz səyahətlər.',
-      dest_eyebrow: 'Populyar istiqamətlər', dest_title: 'Hər marşrutun öz hekayəsi var.',
-      dest_lead: 'Bakının daş küçələrindən Qafqaz zirvələrinə — sənə uyğun gələn yeri seç, qalanını biz qurarıq.',
-      map_eyebrow: 'Xəritə', map_title: 'Marşrutu özün qur.',
-      about_eyebrow: 'Niyə Caspian Journeys', about_title: 'Sənin səyahətin, sənin qaydaların.',
-      price_eyebrow: 'Qiymətlər', price_title: 'Aydın qiymət, gizli xərc yoxdur.',
-      builder_eyebrow: 'Səyahət qurucu', builder_title: 'Öz marşrutunu yığ.',
-      tours_eyebrow: 'Seçilmiş tur paketi', tours_title: '3 günlük Azərbaycan dadı.',
-      exp_eyebrow: 'Təcrübələr', exp_title: 'Görmək yetməz, hiss etmək lazım.',
-      season_eyebrow: 'Mövsümlər', season_title: 'Azərbaycan dörd dəfə gözəldir.',
-      guides_eyebrow: 'Komanda', guides_title: 'Səni tanıyan bələdçi.',
-      food_eyebrow: 'Dad rehberi', food_title: 'Azərbaycanı süfrədən tanı.',
-      prep_eyebrow: 'Səyahətə hazırlıq', prep_title: 'Bilərsən, rahat olar.',
-      reviews_eyebrow: 'Rəylər', reviews_title: 'Onlar artıq yolda idi.',
-      faq_eyebrow: 'Suallar', faq_title: 'Tez-tez soruşulanlar.',
-      story_eyebrow: 'Bizim hekayə', story_title: 'Xəritəni deyil, ölkəni sevdiririk.',
-      journal_eyebrow: 'Səyahət jurnalı', journal_title: 'Yola çıxmadan əvvəl oxu.',
-      video_eyebrow: 'Video hekayələr', video_title: 'Onlar öz ağızından danışır.',
-      news_eyebrow: 'Bülleten', news_title: 'Yeni marşrutlardan ilk sən xəbər tut.',
-      final_eyebrow: 'Başla', final_title: 'Növbəti hekayən Azərbaycanda başlasın.'
-    },
-    en: {
-      nav_tours: 'Tours', nav_dest: 'Destinations', nav_about: 'About', nav_reviews: 'Reviews', nav_contact: 'Contact',
-      cta_plan: 'Plan my tour', cta_routes: 'Explore routes', cta_film: 'Watch film',
-      proof_guests: 'guests', proof_rating: 'rating', proof_routes: 'routes',
-      hero_title: 'Do not just see Azerbaijan. <em>Live it.</em>',
-      hero_lead: 'Personal, seamless and unforgettable journeys designed with local guides.',
-      dest_eyebrow: 'Popular destinations', dest_title: 'Every route has its own story.',
-      dest_lead: 'From the stone streets of Baku to Caucasus peaks — pick your place, we build the rest.',
-      map_eyebrow: 'Map', map_title: 'Build your own route.',
-      about_eyebrow: 'Why Caspian Journeys', about_title: 'Your journey, your rules.',
-      price_eyebrow: 'Pricing', price_title: 'Clear prices, no hidden costs.',
-      builder_eyebrow: 'Trip builder', builder_title: 'Assemble your route.',
-      tours_eyebrow: 'Signature package', tours_title: '3 days of Azerbaijani flavour.',
-      exp_eyebrow: 'Experiences', exp_title: 'Seeing is not enough — feel it.',
-      season_eyebrow: 'Seasons', season_title: 'Azerbaijan is beautiful four times a year.',
-      guides_eyebrow: 'Team', guides_title: 'A guide who knows you.',
-      food_eyebrow: 'Food guide', food_title: 'Discover Azerbaijan through its table.',
-      prep_eyebrow: 'Before you go', prep_title: 'Know it, relax.',
-      reviews_eyebrow: 'Reviews', reviews_title: 'They have already been on the road.',
-      faq_eyebrow: 'Questions', faq_title: 'Frequently asked questions.',
-      story_eyebrow: 'Our story', story_title: 'We make you love the country, not the map.',
-      journal_eyebrow: 'Travel journal', journal_title: 'Read before you set off.',
-      video_eyebrow: 'Video stories', video_title: 'They tell it themselves.',
-      news_eyebrow: 'Newsletter', news_title: 'Be first to hear about new routes.',
-      final_eyebrow: 'Start', final_title: 'Let your next story begin in Azerbaijan.'
-    },
-    ru: {
-      nav_tours: 'Туры', nav_dest: 'Направления', nav_about: 'О нас', nav_reviews: 'Отзывы', nav_contact: 'Контакты',
-      cta_plan: 'Спланировать тур', cta_routes: 'Смотреть маршруты', cta_film: 'Смотреть фильм',
-      proof_guests: 'гостей', proof_rating: 'оценка', proof_routes: 'маршрутов',
-      hero_title: 'Не просто увидеть Азербайджан. <em>Прожить его.</em>',
-      hero_lead: 'Личные, комфортные и незабываемые путешествия с местными гидами.',
-      dest_eyebrow: 'Популярные направления', dest_title: 'У каждого маршрута своя история.',
-      dest_lead: 'От каменных улиц Баку до вершин Кавказа — выберите место, остальное сделаем мы.',
-      map_eyebrow: 'Карта', map_title: 'Соберите свой маршрут.',
-      about_eyebrow: 'Почему Caspian Journeys', about_title: 'Ваше путешествие, ваши правила.',
-      price_eyebrow: 'Цены', price_title: 'Ясная цена без скрытых доплат.',
-      builder_eyebrow: 'Конструктор поездки', builder_title: 'Соберите свой маршрут.',
-      tours_eyebrow: 'Фирменный пакет', tours_title: '3 дня вкуса Азербайджана.',
-      exp_eyebrow: 'Впечатления', exp_title: 'Мало увидеть — нужно почувствовать.',
-      season_eyebrow: 'Сезоны', season_title: 'Азербайджан прекрасен четырежды в год.',
-      guides_eyebrow: 'Команда', guides_title: 'Гид, который вас понимает.',
-      food_eyebrow: 'Гастрономия', food_title: 'Познайте Азербайджан через стол.',
-      prep_eyebrow: 'Подготовка', prep_title: 'Знаете — значит спокойны.',
-      reviews_eyebrow: 'Отзывы', reviews_title: 'Они уже в пути.',
-      faq_eyebrow: 'Вопросы', faq_title: 'Частые вопросы.',
-      story_eyebrow: 'Наша история', story_title: 'Мы учим любить страну, а не карту.',
-      journal_eyebrow: 'Дневник путешествий', journal_title: 'Почитайте перед дорогой.',
-      video_eyebrow: 'Видеоистории', video_title: 'Они рассказывают сами.',
-      news_eyebrow: 'Рассылка', news_title: 'Узнавайте о новых маршрутах первыми.',
-      final_eyebrow: 'Начните', final_title: 'Ваша следующая история начинается в Азербайджане.'
-    }
-  };
-
+  const I18 = window.CJI18n;
+  const T = (text) => (I18 ? I18.T(text) : String(text == null ? '' : text));
   const langButtons = $$('.lang-btn');
   const langNote = $('#lang-note');
+  const motionToggle = $('#motion-toggle');
+  const calcNote = $('#calc-note');
   let langTimer;
+  let langInitialized = false;
 
-  function applyLang(lang) {
-    const pack = I18N[lang] || I18N.az;
-    document.documentElement.lang = lang;
-    $$('[data-i18n]').forEach((el) => {
-      const value = pack[el.dataset.i18n];
-      if (value == null) return;
-      if (el.dataset.i18n === 'hero_title') el.innerHTML = value;
-      else el.textContent = value;
-    });
-    try { localStorage.setItem('cj_lang', lang); } catch (_) { /* ignore */ }
-    logEvent('lang_change', { lang });
+  const LANG_NOTES = {
+    az: 'Sayt Azərbaycan dilindədir.',
+    en: 'Site is now in English.',
+    ru: 'Сайт переключён на русский язык.'
+  };
+
+  /* Statik mətnləri CJI18n tərcümə edir. Dəyişən mətnlər data-no-i18n ilə
+     qeyd olunub və dil dəyişəndə aşağıdakı funksiyalarla yenidən çizilir. */
+  function refreshDynamic() {
+    if (!langInitialized) return;
+    if (activeMapKey) selectPlace(activeMapKey, activeMapPoint, true);
+    updatePrice();
+    renderBuilder();
+    renderStory();
+    applyFilter();
+    $$('[data-i18n-key]').forEach((el) => { el.textContent = T(el.dataset.i18nKey); });
+    if (successModal && !successModal.hidden) applySuccessText();
+    if (lightbox && !lightbox.hidden && lightbox.dataset.captionKey) {
+      const caption = $('#lightbox-caption');
+      const image = $('#lightbox-img');
+      if (caption) caption.textContent = T(lightbox.dataset.captionKey);
+      if (image) image.alt = T(lightbox.dataset.captionKey);
+    }
+    applyMotionLabel();
+    applyContacts();
+    applyNotifyStatus();
+    applyStructuredData();
   }
 
-  let storedLang = 'az';
-  try { storedLang = localStorage.getItem('cj_lang') || 'az'; } catch (_) { /* ignore */ }
-  const urlLang = new URLSearchParams(window.location.search).get('lang');
-  if (urlLang && I18N[urlLang]) storedLang = urlLang;
+  function setLang(lang, announce) {
+    const target = ['az', 'en', 'ru'].indexOf(lang) >= 0 ? lang : 'az';
+    langButtons.forEach((b) => {
+      const active = b.dataset.lang === target;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+    if (I18) I18.set(target);
+    else document.documentElement.lang = target;
+    try { localStorage.setItem('cj_lang', target); } catch (_) { /* ignore */ }
+    logEvent('lang_change', { lang: target });
+    if (announce && langNote) {
+      langNote.textContent = T(LANG_NOTES[target]);
+      langNote.classList.add('is-shown');
+      window.clearTimeout(langTimer);
+      langTimer = window.setTimeout(() => langNote.classList.remove('is-shown'), 2600);
+    }
+    return target;
+  }
 
-  langButtons.forEach((b) => {
-    const active = b.dataset.lang === storedLang;
-    b.classList.toggle('is-active', active);
-    b.setAttribute('aria-pressed', String(active));
-  });
-  if (storedLang !== 'az') applyLang(storedLang);
+  if (I18) window.addEventListener('cj:langchange', refreshDynamic);
 
   langButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const lang = button.dataset.lang;
-      langButtons.forEach((b) => {
-        const active = b === button;
-        b.classList.toggle('is-active', active);
-        b.setAttribute('aria-pressed', String(active));
-      });
-      applyLang(lang);
-      if (langNote) {
-        langNote.textContent = lang === 'az'
-          ? 'Sayt Azərbaycan dilindədir.'
-          : lang === 'en' ? 'Site is now in English.' : 'Сайт переключён на русский язык.';
-        langNote.classList.add('is-shown');
-      }
-      window.clearTimeout(langTimer);
-      langTimer = window.setTimeout(() => langNote && langNote.classList.remove('is-shown'), 2600);
+      setLang(lang, true);
       logEvent('lang_button', { lang });
     });
   });
+
+  /* Mərkəzləşdirilmiş əlaqə məlumatları — js/config.js */
+  function applyContacts() {
+    const cfg = window.CJ_CONFIG || {};
+    const setHref = (selector, value) => {
+      if (!value) return;
+      $$(selector).forEach((el) => el.setAttribute('href', value));
+    };
+    if (cfg.email) setHref('[data-contact="email"]', `mailto:${cfg.email}`);
+    if (cfg.phone) setHref('[data-contact="phone"]', `tel:${String(cfg.phone).replace(/[^\d+]/g, '')}`);
+    if (cfg.whatsapp) setHref('[data-contact="whatsapp"]', cfg.whatsapp);
+    if (cfg.instagram) setHref('[data-contact="instagram"]', cfg.instagram);
+    if (cfg.tiktok) setHref('[data-contact="tiktok"]', cfg.tiktok);
+    const emailText = $('[data-contact-text="email"]');
+    if (emailText && cfg.email) emailText.textContent = cfg.email;
+    const phoneText = $('[data-contact-text="phone"]');
+    if (phoneText && cfg.phoneDisplay) phoneText.textContent = cfg.phoneDisplay;
+    const phoneField = $('#phone');
+    if (phoneField && cfg.phoneDisplay) phoneField.placeholder = cfg.phoneDisplay;
+    const mailFallback = $('#mail-fallback');
+    if (mailFallback && cfg.email) mailFallback.href = `mailto:${cfg.email}`;
+    const hoursText = $('[data-contact-text="hours"]');
+    if (hoursText && cfg.hours) hoursText.textContent = T(cfg.hours);
+  }
+
+  function applyNotifyStatus() {
+    const note = $('#notify-note');
+    if (!note) return;
+    const live = !!(window.CJNotify && window.CJNotify.enabled);
+    const key = live
+      ? 'Bildiriş kanalı aktivdir — sorğular komandaya çatdırılır.'
+      : 'Bildiriş kanalı demo rejimindədir; sorğular bu cihazda saxlanılır.';
+    note.dataset.i18nKey = key;
+    note.textContent = T(key);
+    note.classList.toggle('is-live', live);
+  }
+
+  /* JSON-LD only advertises contact details once they are marked as verified. */
+  function applyStructuredData() {
+    const script = $('script[type="application/ld+json"]');
+    const cfg = window.CJ_CONFIG;
+    if (!script || !cfg) return;
+    try {
+      const data = JSON.parse(script.textContent);
+      ['email', 'telephone', 'sameAs', 'openingHours'].forEach((key) => { delete data[key]; });
+      if (cfg.contactVerified === true) {
+        if (cfg.email) data.email = cfg.email;
+        if (cfg.phone) data.telephone = String(cfg.phone).replace(/[^\d+]/g, '');
+        if (cfg.hours) data.openingHours = 'Mo-Su 09:00-21:00';
+        const sameAs = [cfg.instagram, cfg.tiktok].filter(Boolean);
+        if (sameAs.length) data.sameAs = sameAs;
+      }
+      script.textContent = JSON.stringify(data, null, 2);
+    } catch (_) { /* schema is optional */ }
+  }
+
+  /* İstifadəçinin öz animasiya seçimi (OS preference ilə yanaşı) */
+  function motionDisabled() {
+    return reduceMotion || document.body.classList.contains('no-motion');
+  }
+  function applyMotionLabel() {
+    if (!motionToggle) return;
+    const off = document.body.classList.contains('no-motion');
+    motionToggle.textContent = T(off ? 'Animasiyaları aç' : 'Animasiyaları söndür');
+    motionToggle.setAttribute('aria-pressed', String(off));
+  }
+  try {
+    if (localStorage.getItem('cj_motion') === 'off') document.body.classList.add('no-motion');
+  } catch (_) { /* ignore */ }
+  applyMotionLabel();
+  if (motionToggle) {
+    motionToggle.addEventListener('click', () => {
+      const off = document.body.classList.toggle('no-motion');
+      scrollBehavior = motionDisabled() ? 'auto' : 'smooth';
+      try { localStorage.setItem('cj_motion', off ? 'off' : 'on'); } catch (_) { /* ignore */ }
+      applyMotionLabel();
+      onScroll();
+      logEvent('motion_toggle', { off });
+    });
+  }
+
+  function setStatus(el, key) {
+    if (!el) return;
+    el.dataset.i18nKey = key;
+    el.textContent = T(key);
+  }
 
   /* ---------- Tur filtri ---------- */
   const filterForm = $('#tour-filter');
@@ -272,6 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterInterest = $('#filter-interest');
   const filterCount = $('#filter-count');
   const placeCards = $$('#destination-grid .destination-card');
+  /* Axtarış hər dil işləyir: orijinal AZ mətn saxlanılır, cari tərcümə ilə birlikdə axtarılır. */
+  placeCards.forEach((card) => { card.dataset.searchText = card.textContent.toLocaleLowerCase('az'); });
 
   function applyFilter() {
     if (!placeCards.length) return;
@@ -282,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let visible = 0;
 
     placeCards.forEach((card) => {
-      const text = card.textContent.toLocaleLowerCase('az');
+      const text = `${card.dataset.searchText || ''} ${card.textContent.toLocaleLowerCase('az')}`;
       const ok = (!q || text.includes(q))
         && (!region || card.dataset.region === region)
         && (!duration || card.dataset.duration === duration)
@@ -291,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (ok) visible += 1;
     });
 
-    if (filterCount) filterCount.textContent = `${visible} marşrut tapıldı`;
+    if (filterCount) filterCount.textContent = `${visible} ${T('marşrut tapıldı')}`;
   }
 
   if (filterForm) {
@@ -332,17 +361,21 @@ document.addEventListener('DOMContentLoaded', () => {
     lahc: { title: 'Lahıc & İsmayıllı', desc: 'Mis sənətkarlığı, daş küçələr və meşə qəhvəsi.', time: '1 gün', people: '2–6 nəfər' }
   };
   const mapDetail = $('#map-detail');
+  let activeMapKey = null;
+  let activeMapPoint = null;
 
-  function selectPlace(key, point) {
+  function selectPlace(key, point, silent) {
     const data = mapData[key];
     if (!data || !mapDetail) return;
-    $$('.map-point').forEach((p) => p.classList.toggle('is-selected', p === point));
-    $('h3', mapDetail).textContent = data.title;
-    $('.map-detail-desc', mapDetail).textContent = data.desc;
+    activeMapKey = key;
+    activeMapPoint = point || activeMapPoint;
+    $$('.map-point').forEach((p) => p.classList.toggle('is-selected', p === activeMapPoint));
+    $('h3', mapDetail).textContent = T(data.title);
+    $('.map-detail-desc', mapDetail).textContent = T(data.desc);
     const meta = $$('.map-detail-meta span', mapDetail);
-    if (meta[0]) meta[0].innerHTML = `<svg class="icon"><use href="#i-clock"/></svg> ${data.time}`;
-    if (meta[1]) meta[1].innerHTML = `<svg class="icon"><use href="#i-users"/></svg> ${data.people}`;
-    logEvent('map_select', { place: key });
+    if (meta[0]) meta[0].innerHTML = `<svg class="icon"><use href="#i-clock"/></svg> ${T(data.time)}`;
+    if (meta[1]) meta[1].innerHTML = `<svg class="icon"><use href="#i-users"/></svg> ${T(data.people)}`;
+    if (!silent) logEvent('map_select', { place: key });
   }
 
   $$('.map-point').forEach((point) => {
@@ -369,9 +402,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let base = people * days * 45;
     if (calcTransfer && calcTransfer.checked) base += people * 25;
     if (calcVip && calcVip.checked) base += people * 30;
+    const groupDiscount = people >= 4;
+    if (groupDiscount) base *= 0.9;
     const min = Math.round(base * 0.9 / 10) * 10;
     const max = Math.round(base * 1.2 / 10) * 10;
-    calcOutput.textContent = `Təxmini: ${min} – ${max} AZN`;
+    calcOutput.textContent = `${T('Təxmini:')} ${min} – ${max} AZN`;
+    if (calcNote) calcNote.textContent = T(groupDiscount
+      ? 'Qrup endirimi tətbiq olundu (10%).'
+      : '4+ nəfər üçün 10% qrup endirimi avtomatik tətbiq olunur.');
   }
 
   [calcPeople, calcDays, calcTransfer, calcVip].forEach((el) => {
@@ -397,17 +435,20 @@ document.addEventListener('DOMContentLoaded', () => {
     'dağ': 'Quba kənd yolu və Şahdağ zirvə havası',
     'fotoqrafiya': 'Gün doğumu / batımı üçün xüsusi kadr nöqtələri'
   };
+  const builderSlots = ['Səhər', 'Günorta', 'Axşam'];
 
   function renderBuilder() {
     if (!builderOutput) return;
     const days = Number(builderDays && builderDays.value || 2);
     const chosen = $$('[data-interest]:checked').map((i) => i.value);
-    const list = chosen.length ? chosen : ['şəhər tarixi'];
-
-    const html = Array.from({ length: days }, (_, index) => {
-      const first = interestIdeas[list[index % list.length]];
-      const second = interestIdeas[list[(index + 1) % list.length]];
-      return `<div class="builder-day"><strong>Gün ${String(index + 1).padStart(2, '0')}</strong><p>${first}. Ardınca: ${second}. Vaxt və transfer bələdçi tərəfindən tənzimlənir.</p></div>`;
+    /* Seçilmiş maraqlar öndə gəlir, lakin heç bir gün eyni fəaliyyəti təkrarlamır. */
+    const pool = Array.from(new Set(chosen.concat(Object.keys(interestIdeas))));
+    const html = Array.from({ length: days }, (_, dayIndex) => {
+      const items = builderSlots.map((slot, slotIndex) => {
+        const key = pool[(dayIndex * builderSlots.length + slotIndex) % pool.length];
+        return `<p><strong>${T(slot)}:</strong> ${T(interestIdeas[key])}</p>`;
+      }).join('');
+      return `<div class="builder-day"><strong>${T('Gün')} ${String(dayIndex + 1).padStart(2, '0')}</strong>${items}<p class="calc-note">${T('Vaxt və transfer bələdçi tərəfindən tənzimlənir.')}</p></div>`;
     }).join('');
 
     builderOutput.innerHTML = html;
@@ -425,23 +466,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---------- Modal köməkçisi ---------- */
+  /* ---------- Modal köməkçisi: focus trap + geri qayıdış ---------- */
   let lastFocused = null;
+  let activeModal = null;
+
+  function modalFocusables(modal) {
+    return Array.from(modal.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'))
+      .filter((el) => el.getClientRects().length > 0);
+  }
 
   function openModal(modal) {
     if (!modal) return;
     lastFocused = document.activeElement;
+    activeModal = modal;
     modal.hidden = false;
     document.body.style.overflow = 'hidden';
-    const closeBtn = $('.modal-close', modal);
+    const header = $('.site-header');
+    const footer = $('.site-footer');
+    if (header) header.inert = true;
+    if (footer) footer.inert = true;
+    const closeBtn = $('.modal-close', modal) || modalFocusables(modal)[0];
     if (closeBtn) closeBtn.focus();
     logEvent('modal_open', { id: modal.id });
   }
 
   function closeModal(modal) {
     if (!modal) return;
+    if (modal === videoModal) stopStory();
     modal.hidden = true;
     document.body.style.overflow = '';
+    const header = $('.site-header');
+    const footer = $('.site-footer');
+    if (header) header.inert = false;
+    if (footer) footer.inert = false;
+    if (activeModal === modal) activeModal = null;
     if (lastFocused && lastFocused.focus) lastFocused.focus();
   }
 
@@ -450,8 +508,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
 
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    $$('.modal:not([hidden])').forEach(closeModal);
+    if (!activeModal) return;
+    if (e.key === 'Escape') { closeModal(activeModal); return; }
+    if (e.key !== 'Tab') return;
+    const items = modalFocusables(activeModal);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    const outside = !activeModal.contains(document.activeElement);
+    if (e.shiftKey && (outside || document.activeElement === first)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (outside || document.activeElement === last)) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   /* ---------- Foto lightbox ---------- */
@@ -460,16 +531,18 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('click', () => {
       const img = $('#lightbox-img');
       const caption = $('#lightbox-caption');
-      if (img) { img.src = card.dataset.lightbox; img.alt = card.dataset.caption || 'Səyahət fotoşəkili'; }
-      if (caption) caption.textContent = card.dataset.caption || '';
+      const key = card.dataset.caption || 'Səyahət fotoşəkili';
+      if (img) { img.src = card.dataset.lightbox; img.alt = T(key); }
+      if (caption) caption.textContent = T(key);
+      if (lightbox) lightbox.dataset.captionKey = key;
       openModal(lightbox);
       logEvent('lightbox', { image: card.dataset.lightbox });
     });
   });
 
-  /* ---------- Video hekayə (slider) ---------- */
+  /* ---------- Foto hekayə (slider) ---------- */
   const videoModal = $('#video-modal');
-  const videoStories = {
+  const storySlidesData = {
     baku: [
       { src: 'assets/images/dest-baku.jpg', title: 'Səhər: İçərişəhər', text: 'Daş küçələr, Qız qalası və ilk çay.' },
       { src: 'assets/images/dest-baku.jpg', title: 'Günorta: bazar', text: 'Ədviyyat, meyvə və yerli sahibkarlar.' },
@@ -492,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { src: 'assets/images/dest-shahdag.jpg', title: 'Şahdağ', text: 'Qafqaz zirvələrinin havası.' }
     ]
   };
-  let storySlides = videoStories.default;
+  let storySlides = storySlidesData.default;
   let storyIndex = 0;
   let storyTimer = null;
 
@@ -502,9 +575,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const title = $('#video-stage-title');
     const text = $('#video-stage-text');
     const counter = $('#video-counter');
-    if (img) { img.src = slide.src; img.alt = slide.title; }
-    if (title) title.textContent = slide.title;
-    if (text) text.textContent = slide.text;
+    if (img) { img.src = slide.src; img.alt = T(slide.title); }
+    if (title) title.textContent = T(slide.title);
+    if (text) text.textContent = T(slide.text);
     if (counter) counter.textContent = `${storyIndex + 1} / ${storySlides.length}`;
   }
 
@@ -520,12 +593,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $$('[data-open-video]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      storySlides = videoStories[btn.dataset.videoStory || 'default'] || videoStories.default;
+      storySlides = storySlidesData[btn.dataset.videoStory || 'default'] || storySlidesData.default;
       storyIndex = 0;
       renderStory();
       openModal(videoModal);
       stopStory();
-      if (!reduceMotion) storyTimer = window.setInterval(() => moveStory(1), 3200);
+      if (!motionDisabled()) storyTimer = window.setInterval(() => moveStory(1), 3200);
     });
   });
 
@@ -570,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
       reviews.push(review);
       writeStore('cj_reviews', reviews);
       renderCustomReviews();
-      if (reviewStatus) reviewStatus.textContent = 'Rəyin qeyd olundu. Təşəkkür edirik!';
+      setStatus(reviewStatus, 'Rəyin qeyd olundu. Təşəkkür edirik!');
       reviewForm.reset();
       if (window.CJNotify && window.CJNotify.send) window.CJNotify.send('review', review);
       logEvent('review_submit', { name: review.name });
@@ -587,13 +660,13 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const email = String(new FormData(newsletterForm).get('email') || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        if (nlStatus) nlStatus.textContent = 'Zəhmət olmasa, düzgün e-poçt ünvanı daxil et.';
+        setStatus(nlStatus, 'Zəhmət olmasa, düzgün e-poçt ünvanı daxil et.');
         return;
       }
       const emails = readStore('cj_newsletter');
       if (!emails.includes(email)) emails.push(email);
       writeStore('cj_newsletter', emails);
-      if (nlStatus) nlStatus.textContent = 'Abunə tamamlandı! Yeni marşrutları ilk sən alacaqsan.';
+      setStatus(nlStatus, 'Abunə tamamlandı! Yeni marşrutları ilk sən alacaqsan.');
       newsletterForm.reset();
       if (window.CJNotify && window.CJNotify.send) window.CJNotify.send('newsletter', { email });
       logEvent('newsletter', { email });
@@ -601,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- Paylaş və copy-link ---------- */
-  const shareText = 'Azərbaycanı sadəcə görmə, onu yaşa — Caspian Journeys';
+  const shareText = () => T('Azərbaycanı sadəcə görmə, onu yaşa — Caspian Journeys');
 
   $$('[data-share]').forEach((button) => {
     button.addEventListener('click', async () => {
@@ -609,12 +682,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const type = button.dataset.share;
       logEvent('share', { type });
       if (navigator.share && type === 'whatsapp') {
-        try { await navigator.share({ title: 'Caspian Journeys', text: shareText, url }); return; } catch (_) { /* davam */ }
+        try { await navigator.share({ title: 'Caspian Journeys', text: shareText(), url }); return; } catch (_) { /* davam */ }
       }
       const targets = {
-        whatsapp: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${url}`)}`,
+        whatsapp: `https://wa.me/?text=${encodeURIComponent(`${shareText()} ${url}`)}`,
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-        x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`
+        x: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText())}&url=${encodeURIComponent(url)}`
       };
       if (targets[type]) window.open(targets[type], '_blank', 'noopener,noreferrer');
     });
@@ -624,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
     button.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(window.location.href.split('#')[0]);
-        button.setAttribute('aria-label', 'Link kopyalandı');
+        button.setAttribute('aria-label', T('Link kopyalandı'));
         button.style.color = '#25d366';
         window.setTimeout(() => { button.style.color = ''; }, 1600);
       } catch (_) { /* clipboard icazəsi yoxdursa sus */ }
@@ -654,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bookingForm.classList.remove('is-highlighted');
       void bookingForm.offsetWidth;
       bookingForm.classList.add('is-highlighted');
-      window.setTimeout(() => nameInput && nameInput.focus({ preventScroll: true }), reduceMotion ? 0 : 520);
+      window.setTimeout(() => nameInput && nameInput.focus({ preventScroll: true }), motionDisabled() ? 0 : 520);
       window.setTimeout(() => bookingForm.classList.remove('is-highlighted'), 1400);
       logEvent('route_cta', { route });
     });
@@ -667,7 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
       target.hidden = false;
       target.scrollIntoView({ behavior: scrollBehavior, block: 'center' });
       const firstInput = $('input', target);
-      if (firstInput) window.setTimeout(() => firstInput.focus({ preventScroll: true }), reduceMotion ? 0 : 400);
+      if (firstInput) window.setTimeout(() => firstInput.focus({ preventScroll: true }), motionDisabled() ? 0 : 400);
     });
   });
 
@@ -679,10 +752,21 @@ document.addEventListener('DOMContentLoaded', () => {
       'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Caspian Journeys//AZ',
       'BEGIN:VEVENT', `UID:${Date.now()}@caspianjourneys.az`,
       `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
-      'SUMMARY:Caspian Journeys — səyahət planı',
-      'DESCRIPTION:Bələdçimiz sizinlə əlaqə saxlayacaq.',
+      `SUMMARY:${T('Caspian Journeys — səyahət planı')}`,
+      `DESCRIPTION:${T('Bələdçimiz sizinlə əlaqə saxlayacaq.')}`,
       'LOCATION:Bakı, Azərbaycan', 'END:VEVENT', 'END:VCALENDAR'
     ].join('\r\n');
+  }
+
+  function applySuccessText() {
+    if (!successModal) return;
+    const live = !!(window.CJNotify && window.CJNotify.enabled);
+    const title = $('#success-title');
+    const text = $('#success-text');
+    if (title) title.textContent = T(live ? 'Sorğun qəbul edildi' : 'Sorğun qeyd olundu');
+    if (text) text.textContent = T(live
+      ? 'Sorğun qəbul edildi və komandamıza çatdı. Bələdçimiz 15 dəqiqə ərzində əlaqə saxlayacaq.'
+      : 'Sorğu bu cihazda saxlanıldı. Canlı kanal qoşulana qədər məktubu e-poçtla göndər; göndərdikdən sonra 15 dəqiqə ərzində yazacağıq.');
   }
 
   if (bookingForm) {
@@ -696,7 +780,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (invalid.length) {
         invalid.forEach((el) => el.classList.add('is-invalid'));
-        if (formStatus) formStatus.textContent = 'Zəhmət olmasa, qırmızı ilə qeyd olunan sahələri doldur.';
+        setStatus(formStatus, 'Zəhmət olmasa, qırmızı ilə qeyd olunan sahələri doldur.');
         invalid[0].focus();
         logEvent('form_validation_error', { fields: invalid.map(i => i.id) });
         return;
@@ -711,12 +795,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const people = String(data.get('people') || '').trim();
       const interestValue = String(data.get('interest') || '').trim();
       const budget = String(data.get('budget') || '').trim();
+      const notifyLive = !!(window.CJNotify && window.CJNotify.enabled);
 
-      const booking = { name, phone, date, people, interest: interestValue, budget, createdAt: new Date().toISOString() };
+      /* Admin panel üçün status əlavə olunur. */
+      const booking = { name, phone, date, people, interest: interestValue, budget, status: 'Yeni', createdAt: new Date().toISOString() };
       const bookings = readStore('cj_bookings');
       bookings.push(booking);
       writeStore('cj_bookings', bookings);
 
+      const cfg = window.CJ_CONFIG || {};
+      const email = cfg.email || 'hello@caspianjourneys.az';
       const subject = `Caspian Journeys — ${interestValue}`;
       const body = [
         `Ad: ${name}`,
@@ -728,15 +816,19 @@ document.addEventListener('DOMContentLoaded', () => {
         '',
         'Salam, mənim üçün səyahət planı hazırlaya bilərsinizmi?'
       ].join('\n');
-      const mailto = `mailto:hello@caspianjourneys.az?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const mailto = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-      if (submit) { submit.disabled = true; submit.textContent = 'Hazırlanır...'; }
+      if (submit) { submit.disabled = true; submit.textContent = T('Hazırlanır...'); }
       if (formStatus) formStatus.textContent = '';
 
       window.setTimeout(() => {
-        window.location.href = mailto;
         if (submit) { submit.disabled = false; submit.textContent = originalLabel; }
-        if (formStatus) formStatus.textContent = 'Məktub e-poçt proqmanında açıldı. Göndərməyi unutma.';
+        setStatus(formStatus, notifyLive
+          ? 'Sorğun qəbul edildi və komandamıza çatdı. Bələdçimiz 15 dəqiqə ərzində əlaqə saxlayacaq.'
+          : 'Sorğu qeyd olundu. Məktubu e-poçt proqramında açmaq üçün modaldakı düyməyə bas.');
+
+        const mailFallback = $('#mail-fallback');
+        if (mailFallback) mailFallback.href = mailto;
 
         const icsLink = $('#ics-link');
         if (icsLink) {
@@ -745,15 +837,25 @@ document.addEventListener('DOMContentLoaded', () => {
           icsLink.href = url;
           icsLink.dataset.url = url;
         }
+        applySuccessText();
         openModal(successModal);
         if (window.CJNotify && window.CJNotify.send) window.CJNotify.send('booking', booking);
-        logEvent('booking_submit', { interest: interestValue, people, budget });
-      }, reduceMotion ? 0 : 450);
+        logEvent('booking_submit', { interest: interestValue, people, budget, channel: notifyLive ? 'worker' : 'demo' });
+      }, motionDisabled() ? 0 : 450);
     });
   }
 
-  /* ---------- Service Worker ---------- */
+  /* ---------- Dil, əlaqə və service worker ---------- */
+  let initialLang = 'az';
+  try { initialLang = localStorage.getItem('cj_lang') || 'az'; } catch (_) { /* ignore */ }
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  if (['az', 'en', 'ru'].indexOf(urlLang) >= 0) initialLang = urlLang;
+  const initialMapPoint = $('.map-point[data-place="baki"]');
+  if (initialMapPoint) selectPlace('baki', initialMapPoint, true);
+  langInitialized = true;
+  setLang(initialLang, false);
+
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v=4').catch(() => { /* offline dəstək kritik deyil */ });
+    navigator.serviceWorker.register('sw.js?v=6').catch(() => { /* offline dəstək kritik deyil */ });
   }
 });

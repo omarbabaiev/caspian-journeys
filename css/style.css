@@ -17,6 +17,7 @@
   --cream: #f6efe3;
   --azure: #2aa7c6;
   --terracotta: #c96f4a;
+  --terracotta-ink: #a8512f; /* 5.41:1 — WCAG AA, açıq fonda mətn üçün */
   --container: 1240px;
 
   --display: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -394,7 +395,7 @@ section[id] { scroll-margin-top: 86px; }
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: var(--terracotta);
+  color: var(--terracotta-ink);
   margin-bottom: 1rem;
 }
 .section-head h2 { font-size: clamp(2.5rem, 4.4vw, 3.8rem); }
@@ -783,6 +784,7 @@ section[id] { scroll-margin-top: 86px; }
 .footer-col .icon { width: 15px; height: 15px; color: var(--gold); }
 
 .footer-bottom {
+  font-size: 0.875rem;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -919,9 +921,10 @@ section[id] { scroll-margin-top: 86px; }
 .map-canvas { border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px rgba(1, 37, 68, 0.16); }
 .map-canvas svg { width: 100%; height: auto; display: block; }
 .map-point { fill: var(--gold); stroke: var(--cream); stroke-width: 3; cursor: pointer; transition: fill 180ms ease, transform 180ms ease; transform-origin: center; }
-.map-point:hover, .map-point:focus, .map-point.is-selected { fill: var(--azure); transform: scale(1.25); outline: none; }
+.map-point:hover, .map-point.is-selected { fill: var(--azure); transform: scale(1.25); outline: none; }
+.map-point:focus-visible { fill: var(--azure); stroke: #fff; stroke-width: 4; transform: scale(1.25); }
 .map-detail { background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 2rem; display: flex; flex-direction: column; gap: 0.85rem; }
-.map-detail-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracotta); }
+.map-detail-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terracotta-ink); }
 .map-detail h3 { font-size: 1.9rem; }
 .map-detail-desc { font-size: 0.92rem; color: var(--muted); }
 .map-detail-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; font-weight: 700; }
@@ -983,7 +986,7 @@ section[id] { scroll-margin-top: 86px; }
 .guide-profile { background: #fff; border-radius: 22px; padding: 2.25rem; border-top: 4px solid var(--teal); transition: transform 300ms ease, box-shadow 300ms ease; }
 .guide-profile:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(1, 37, 68, 0.1); }
 .monogram { width: 60px; height: 60px; border-radius: 50%; background: var(--teal); color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 1.8rem; font-weight: 600; margin-bottom: 1.25rem; }
-.guide-role { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracotta); }
+.guide-role { font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--terracotta-ink); }
 .guide-profile h3 { font-size: 1.6rem; margin: 0.3rem 0 0.6rem; }
 .guide-profile p { font-size: 0.9rem; color: var(--muted); }
 .culinary { background: #fff; }
@@ -1049,7 +1052,7 @@ section[id] { scroll-margin-top: 86px; }
 .newsletter { background: var(--mist); }
 .newsletter-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2.5rem; align-items: center; }
 .newsletter h2 { font-size: clamp(2rem, 3.4vw, 2.8rem); margin-bottom: 0.75rem; }
-.newsletter p { color: var(--muted); }
+.newsletter p { color: var(--muted); font-size: 0.875rem; }
 .newsletter-form { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .newsletter-form input { flex: 1 1 220px; font: inherit; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 999px; }
 .newsletter-form .form-status { flex-basis: 100%; color: var(--teal); }
@@ -1124,3 +1127,124 @@ section[id] { scroll-margin-top: 86px; }
 /* A/B test: hero əsas CTA rəng varianta görə dəyişir */
 .ab-variant-b .hero .btn-gold { background: var(--teal); color: #fff; }
 .ab-variant-b .hero .btn-gold:hover { background: var(--azure); }
+
+/* ---------- Review Board düzəlişləri ---------- */
+
+.route-badge {
+  display: inline-block;
+  margin: 0.15rem 0 0.45rem;
+  padding: 0.24rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(42, 167, 198, 0.16);
+  border: 1px solid rgba(42, 167, 198, 0.5);
+  color: #b9e9f4;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.included-box {
+  margin-top: 1.4rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--sand);
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.included-box strong { color: var(--ink); }
+
+.calc-note, .form-help {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.form-help { margin-top: 0.3rem; font-weight: 400; }
+.calc-note { margin-top: -0.5rem; color: var(--teal); font-weight: 600; }
+
+.content-note {
+  margin: -1.4rem 0 1.4rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.footer-toggle {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.footer-toggle:hover { color: var(--gold); }
+
+/* Üzən WhatsApp yalnız mobildə və gecikmə ilə görünür (JS tərəfindən açılır). */
+.floating-wa { display: none; }
+@media (max-width: 760px) {
+  .floating-wa { display: flex; }
+}
+
+/* İstifadəçinin animasiyaları söndür seçimi */
+body.no-motion *, body.no-motion *::before, body.no-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+body.no-motion .reveal { opacity: 1 !important; transform: none !important; }
+body.no-motion .hero-bg, body.no-motion .destination-card img, body.no-motion .experience-card img { transform: none !important; }
+
+/* Modal içində oxunaqlıq və focus görünürlüyü */
+.modal-panel :focus-visible { outline: 3px solid var(--azure); outline-offset: 3px; }
+#lightbox-caption { min-height: 1.4em; }
+.success-actions { flex-wrap: wrap; }
+
+/* "Mənim üçün seç" — qərar verməkdə çətinlik çəkən ziyarətçi üçün qısa yol */
+.quick-pick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -0.6rem 0 1.6rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.quick-pick span { font-weight: 700; color: var(--ink); }
+.quick-pick button {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.quick-pick button:hover, .quick-pick button:focus-visible {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #fff;
+}
+.builder-day p + p { margin-top: 0.25rem; }
+.builder-day p strong { display: inline; color: #fff; font-size: inherit; letter-spacing: normal; margin: 0; }
+.builder-day .calc-note { color: rgba(246, 239, 227, 0.62); margin-top: 0.5rem; }
+
+/* WebP srcset: picture özü layout-a təsir etməsin */
+picture { display: contents; }
+
+/* Demo/canlı kanal və nümunə məlumat qeydləri */
+.form-note, .demo-note {
+  font-size: 0.78rem;
+  color: rgba(246, 239, 227, 0.62);
+}
+.form-note { margin: 0 0 0.75rem; }
+.form-note.is-live { color: rgba(42, 167, 198, 0.95); }
+.demo-note { display: block; margin-top: 0.25rem; opacity: 0.75; }

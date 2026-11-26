@@ -284,7 +284,11 @@
       <p>Sorğular, bülleten abunəçiləri, əlavə edilmiş rəylər və sayt hadisələri üçün sadə lokal görünüm.</p>
       <div class="notice">
         <svg class="icon"><use href="#i-info"/></svg>
-        <span><strong>Qeyd:</strong> Bütün məlumatlar yalnız bu brauzerin <code>localStorage</code> sahəsində saxlanılır. Başqa brauzerdə və ya cihazda görünmür, serverə göndərilmir.</span>
+        <span><strong>Qeyd:</strong> Bütün məlumatlar yalnız bu brauzerin <code>localStorage</code> sahəsində saxlanılır. Başqa brauzerdə və ya cihazda görünmür.</span>
+      </div>
+      <div class="notice" id="notify-notice">
+        <svg class="icon"><use href="#i-info"/></svg>
+        <span id="notify-status"><strong>Bildiriş kanalı:</strong> demo rejimi — Telegram endpoint təyin edilməyib.</span>
       </div>
     </section>
 
@@ -321,7 +325,7 @@
       <div class="panel-head"><h2>Sorğular</h2><span id="bookings-sub">0 qeyd</span></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Ad</th><th>Əlaqə</th><th>Tarix</th><th>Nəfər</th><th>Maraq dairəsi</th><th></th></tr></thead>
+          <thead><tr><th>Ad</th><th>Əlaqə</th><th>Tarix</th><th>Nəfər</th><th>Maraq dairəsi</th><th>Status</th><th></th></tr></thead>
           <tbody id="bookings-body"></tbody>
         </table>
       </div>
@@ -377,6 +381,7 @@
   <footer class="container">Caspian Journeys · Demo İdarə Paneli · Məlumatlar lokal olaraq saxlanılır</footer>
   <div class="status" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="js/config.js?v=6"></script>
   <script>
     (function () {
       'use strict';
@@ -387,6 +392,14 @@
         reviews: 'cj_reviews',
         events: 'cj_events'
       };
+
+      var notifyStatus = document.getElementById('notify-status');
+      if (notifyStatus) {
+        var live = !!(window.CJ_NOTIFY_URL && String(window.CJ_NOTIFY_URL).trim());
+        notifyStatus.innerHTML = '<strong>Bildiriş kanalı:</strong> ' + (live
+          ? 'Telegram aktiv — sorğular komandaya çatdırılır.'
+          : 'Demo rejimi — Telegram endpoint təyin edilməyib, sorğular yalnız bu brauzerdə saxlanılır.');
+      }
 
       function read(key) {
         try {
@@ -476,7 +489,7 @@
         document.getElementById('count-bookings').textContent = items.length;
         document.getElementById('bookings-sub').textContent = items.length + ' qeyd';
         if (!items.length) {
-          body.appendChild(emptyRow(6, 'Hələ sorğu yoxdur.'));
+          body.appendChild(emptyRow(7, 'Hələ sorğu yoxdur.'));
           return;
         }
         items.forEach(function (item, index) {
@@ -486,6 +499,26 @@
           row.appendChild(el('td', 'muted', formatTime(pick(item, ['date', 'tarix', 'createdAt', 'timestamp']))));
           row.appendChild(el('td', '', pick(item, ['people', 'nəfər', 'guests'])));
           row.appendChild(el('td', '', pick(item, ['interest', 'maraq', 'tour'])));
+
+          var statusCell = el('td');
+          var statusSelect = document.createElement('select');
+          statusSelect.setAttribute('aria-label', 'Sorğu statusu');
+          ['Yeni', 'Əlaqə saxlanıldı', 'Bağlandı'].forEach(function (label) {
+            var option = document.createElement('option');
+            option.value = label;
+            option.textContent = label;
+            statusSelect.appendChild(option);
+          });
+          statusSelect.value = item.status || 'Yeni';
+          statusSelect.addEventListener('change', function () {
+            var current = read(KEYS.bookings);
+            if (!current[index]) return;
+            current[index].status = statusSelect.value;
+            if (write(KEYS.bookings, current)) { renderAll(); toast('Status yeniləndi.'); }
+          });
+          statusCell.appendChild(statusSelect);
+          row.appendChild(statusCell);
+
           var action = el('td');
           action.appendChild(deleteButton('Sorğunu sil', function () {
             var current = read(KEYS.bookings);

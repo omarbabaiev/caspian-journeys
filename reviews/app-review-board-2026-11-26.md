@@ -161,3 +161,26 @@ Sayt vizual olaraq güclü, interaktiv hissəları (filter, xəritə, hesablayı
 - Video modal və lightbox açıldı; lightbox `src=exp-cuisine.jpg`, caption `Azərbaycan süfrəsi`.
 - Resource timing: 16 image entry, unik təxminən 2.6 MB ən böyük fayl `dest-shahdag.jpg` 652 KB; logo `226 KB`.
 - Not verified: real mobil cihaz 390px viewport, offline xəritə, valid booking submit-nin `mailto:` navigasiyası və `.ics` faylının açılması, Telegram mesajının faktiki çatdırılması (endpoint boş).
+
+---
+
+## Düzəliş statusu (2026-11-26, son yoxlama)
+
+Əsas iradların hamısı üzərində iş aparılıb; qalan iki maddə istifadəçi tərəfindən real məlumat/token təmin olunmadığı üçün **açıq və şəffaf demo rejimi** kimi saxlanılıb.
+
+| # | İrad | Status | Sübut |
+| --- | --- | --- | --- |
+| 1 | RU/EN qismi tərcümə | ✅ Həll | 474 açarlı `js/i18n.js`; H1, kartlar, düymələr, FAQ, footer, modal, xəritə, hesablayıcı və qurucu EN/RU-da test olundu. |
+| 2 | Placeholder əlaqə | ⚠️ Demo, etibarlı | Bütün əlaqə `js/config.js`-də; footer-də “Əlaqə məlumatları nümunədir”; doğrulanmamış məlumat JSON-LD-yə düşmür (`contactVerified: false`). |
+| 3 | Telegram endpoint boş | ⚠️ Demo, etibarlı | Worker kodu hazır; endpoint boş olduqda şəbəkə sorğusu yoxdur və forma bunu açıq bildirir. |
+| 4 | `.eyebrow` kontrastı | ✅ Həll | `--terracotta-ink: #a8512f`, AA. |
+| 5 | Builder təkrarı | ✅ Həll | 3 gün üçün 9 fərqli fəaliyyət sətiri. |
+| 6 | `mailto:` funnel / SLA | ✅ Həll | Avtomatik navigasiya yoxdur; modalda istifadəçi idarəli e-poçt düyməsi, `.ics`, honest SLA, `status: 'Yeni'`. |
+| 7 | Video iddiası | ✅ Həll | “Hekayəni izlə” → foto hekayə, kamera ikonu, slayder terminologiyası. |
+| 8 | Metadata | ✅ Həll | Absolute OG/Twitter/canonical/hreflang + `TravelAgency` JSON-LD. |
+| 9 | Şəkil çəkisi | ✅ Həll | JPEG-lər kompress olundu, loqo 226 KB → ~24 KB, 600w/1000w WebP + `srcset`; lokal test WebP 200. |
+| 10 | Modal focus trap | ✅ Həll | `inert` fon, Tab dövrü, Escape, focus modal daxilində başlayır və geri qayıdır. |
+
+Reviewer detallarından əlavə həll olunanlar: çətinlik/məsafə/mövsüm badge-ləri, daxildir/daxil deyil qutusu, solo və uşaq qiyməti FAQ, qrup endirimi, qısa seçim düymələri, mobildə gecikməli WhatsApp, animasiya düyməsi, footer oxunaqlılığı, lead statusu, VIP avtomobil sinfi və şərtləri.
+
+**Yenidən qiymət:** 8.5/10 — yalnız real əlaqə məlumatları və canlı Telegram kanalı əlavə olunduqda 9+/10 mümkündür. Texniki yoxlamalar: `html-validate`, bütün `node --check`, JSON/CSS yoxlaması, desktop + 390px iframe, EN/RU, filter/calculator/builder/booking/review/newsletter/admin və modal focus testləri keçdi; konsol xətası yoxdur.
