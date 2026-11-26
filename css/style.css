@@ -113,11 +113,11 @@ section[id] { scroll-margin-top: 86px; }
 .site-header.is-scrolled .navbar { min-height: 70px; }
 
 .brand-logo {
-  height: 50px;
+  height: 56px;
   width: auto;
   transition: height 240ms ease;
 }
-.site-header.is-scrolled .brand-logo { height: 42px; }
+.site-header.is-scrolled .brand-logo { height: 48px; }
 
 .site-nav { display: flex; align-items: center; gap: 1.85rem; }
 .site-nav a {
@@ -766,7 +766,7 @@ section[id] { scroll-margin-top: 86px; }
 
 .site-footer { background: var(--obsidian); color: var(--cream); padding: 4.5rem 0 1.5rem; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 0.9fr 0.9fr 0.8fr; gap: 3rem; }
-.footer-about img { height: 54px; width: auto; }
+.footer-about img { height: 62px; width: auto; }
 .footer-about p { margin-top: 1.1rem; font-size: 0.9rem; color: rgba(246, 239, 227, 0.65); max-width: 25rem; }
 .footer-col { display: flex; flex-direction: column; gap: 0.7rem; }
 .footer-col h3 { font-size: 1.4rem; margin-bottom: 0.3rem; }

@@ -1,24 +1,24 @@
 /* Caspian Journeys — minimal offline shell. Safe to delete/update at any time. */
 'use strict';
 
-const CACHE = 'cj-shell-v2';
+const CACHE = 'cj-shell-v3';
 
 const SHELL = [
   '.',
   'index.html',
-  'css/style.css?v=2',
-  'js/main.js?v=2',
+  'css/style.css?v=3',
+  'js/main.js?v=3',
   'manifest.json',
   'assets/images/carpet-pattern.svg',
-  'assets/images/logo-full-cropped.jpg',
+  'assets/images/logo-mark-transparent.png?v=3',
   'assets/images/dest-baku.jpg',
   'assets/images/dest-gobustan.jpg',
   'assets/images/dest-lahic.jpg',
   'assets/images/dest-shahdag.jpg',
   'assets/images/dest-sheki.jpg',
   'assets/images/exp-cuisine.jpg',
-  'assets/images/icon-192.png',
-  'assets/images/icon-512.png'
+  'assets/images/icon-192.png?v=3',
+  'assets/images/icon-512.png?v=3'
 ];
 
 self.addEventListener('install', (event) => {
